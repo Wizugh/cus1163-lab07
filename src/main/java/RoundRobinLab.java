@@ -1,4 +1,5 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RoundRobinLab {
 
@@ -28,7 +29,7 @@ public class RoundRobinLab {
      *   - Create an ArrayList to hold the ready queue
      *   - Add all processes to the ready queue initially
      *   - Create a loop that continues while the queue is not empty
-     *
+     *  
      * TODO 2: Process execution logic
      *   - Remove the first process from the queue
      *   - Calculate how much time this process will run (minimum of quantum and remaining time)
@@ -46,25 +47,37 @@ public class RoundRobinLab {
         int currentTime = 0;
 
         // TODO 1: Create ready queue and add all processes
-
+        ArrayList<Process> readyQueue = new ArrayList<>();
+        for (Process p : processes) {
+            readyQueue.add(p);
+        }
 
         // TODO 2: Scheduling loop
-        // while (queue is not empty) {
+           while (!readyQueue.isEmpty()) {
         //     - Remove first process
+                Process current = readyQueue.remove(0);
         //     - Calculate execution time (min of quantum and remaining time)
+                int executeTime = Math.min(timeQuantum, current.remainingTime);
         //     - Update current time
+                currentTime += executeTime;
         //     - Decrease remaining time
+                current.remainingTime -= executeTime;
         //     - If not done, add back to queue
         //     - If done, set completion time
-        // }
+                if(current.remainingTime > 0){
+                    readyQueue.add(current);
+                } else {
+                    current.completionTime = currentTime;
+                }
+            }
 
 
         // TODO 3: Calculate turnaround and waiting times
-        // for each process:
-        //     turnaroundTime = completionTime - arrivalTime
-        //     waitingTime = turnaroundTime - burstTime
-
-    }
+           for(Process p : processes) {
+             p.turnaroundTime = p.completionTime - p.arrivalTime;
+             p.waitingTime = p.turnaroundTime - p.burstTime;
+            }
+        }
 
     /**
      * Calculate and display metrics (FULLY PROVIDED)
